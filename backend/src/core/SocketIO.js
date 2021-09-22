@@ -4,7 +4,12 @@ const socketio = require('socket.io');
 module.exports = class SocketIO {
     constructor(app){
         this.server = http.createServer(app);
-        this.io = socketio(this.server);
+        this.io = socketio(this.server, {
+            cors: {
+              origin: '*',
+              methods: ['GET', 'POST']
+            }
+        });
     }
 
     onConnection = (socketHandler) => {

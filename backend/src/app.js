@@ -1,6 +1,7 @@
 const bodyParser = require('body-parser');
 const path = require('path');
 const errorHandling = require('./core/middlewares/handling_error');
+const cors = require("cors");
 const Application = require("./core/Application");
 const Router = require('./routes');
 
@@ -17,7 +18,8 @@ app.registerMiddlewares(
     [
         bodyParser.urlencoded({ extended: true }),
         bodyParser.json(),
-        Application.static(publicPath)
+        Application.static(publicPath),
+        cors()
     ]
 );
 
