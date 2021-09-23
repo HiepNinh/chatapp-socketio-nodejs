@@ -13,26 +13,26 @@ const Login = () => {
     }
 
     return (
-        <div class="wrapper fadeInDown">
+        <div className="wrapper fadeInDown">
             <div id="formContent">
 
-                <div class="fadeIn first">
+                <div className="fadeIn first">
                     <img src="/chat.svg" id="icon" alt="User Icon" />
                 </div>
 
                 <div>
                     <input 
-                        type="text" id="login" class="fadeIn second" name="login" placeholder="login" 
+                        type="text" id="login" className="fadeIn second" name="login" placeholder="login" 
                         value={username}
                         onChange={e => setUsername(e.target.value)}
                     />
                     <input 
-                        type="text" id="password" class="fadeIn third" name="login" placeholder="password" 
+                        type="text" id="password" className="fadeIn third" name="login" placeholder="password" 
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                     />
                     <input 
-                        id="login_btn" type="submit" class="fadeIn fourth btn_login_submit" value="Log In" 
+                        id="login_btn" type="submit" className="fadeIn fourth btn_login_submit" value="Log In" 
                         onClick={onClick}
                     />
                 </div>

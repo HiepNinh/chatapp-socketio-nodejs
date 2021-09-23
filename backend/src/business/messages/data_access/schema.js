@@ -11,6 +11,12 @@ module.exports = class MessageSchema extends BaseSchema {
             time: {
                 type: String
             },
+            username: {
+                type: String
+            },
+            avatar: {
+                type: String
+            },
             userId: {
                 type: ObjectId,
                 ref: 'users'

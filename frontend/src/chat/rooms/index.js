@@ -9,7 +9,7 @@ const Room = () => {
 
     useEffect(() => {
         disatch(fetchRooms());
-    }, []);
+    }, [disatch]);
 
     const onClick = (index, room) => {
         Object.values(roomRefs.current).map(el => el.classList.remove("active"));
@@ -42,7 +42,7 @@ const Room = () => {
                                 >
                                     <div className="d-flex bd-highlight">
                                         <div className="img_cont">
-                                            <img src={room.cover} className="rounded-circle user_img" />
+                                            <img alt="group_img" src={room.cover} className="rounded-circle user_img" />
                                         </div>
                                         <div className="user_info">
                                             <span>{room.name}</span>
