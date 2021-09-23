@@ -10,11 +10,25 @@ module.exports = class SocketIO {
               methods: ['GET', 'POST']
             }
         });
+
+        this.socketInRooms = {};
     }
 
     onConnection = (socketHandler) => {
         this.io.on('connection', (socket) => {
             socketHandler(socket);
         });
+    }
+
+    trackingSpecificSocket = (socketId, trackingData) => {
+        this.socketInRooms[socketId] = trackingData;
+    }
+
+    unTrackingSpecificSocket = (socketId) => {
+        const untrackedData = this.socketInRooms[socketId];
+        if(!untrackedData) return;
+
+        delete this.socketInRooms[socketId];
+        return untrackedData;
     }
 }

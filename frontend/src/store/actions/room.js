@@ -9,9 +9,12 @@ export const fetchRooms = () => async (dispatch) => {
     });
 }
 
-export const updateCurrentRoom = (room) => {
-    return {
+export const updateCurrentRoom = (room) => (dispatch, getState) => {
+    const { socket, user } = getState();
+    socket.emit('join', { username: user.username, roomId: room._id});
+
+    dispatch({
         type: "UPDATE_CURRENT_ROOM",
         payload: room
-    };
+    });
 } 

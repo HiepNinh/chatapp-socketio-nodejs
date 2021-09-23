@@ -6,7 +6,7 @@ import Room from './rooms';
 import ChatBox from './chatbox';
 import './styles.css';
 
-const Chat = ({socket}) => {
+const Chat = () => {
     const user = useSelector(state => state.user);
      
     useEffect(() => {
@@ -18,7 +18,7 @@ const Chat = ({socket}) => {
         <div className="container-fluid h-100">
 			<div className="row justify-content-center h-100">
 				<Room />
-                <ChatBox socket={socket} />
+                <ChatBox />
 			</div>
 		</div>
     );

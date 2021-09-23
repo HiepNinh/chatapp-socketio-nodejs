@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
-import { chat, getConversation } from '../../store/actions';
+import { chat, getConversation, serverNotify } from '../../store/actions';
 
-const ChatBox = ({socket}) => {
+const ChatBox = () => {
+    const socket = useSelector(state => state.socket);
     const user = useSelector(state => state.user);
     const currentRoom = useSelector(state => state.currentRoom);
     const messages = useSelector(state => state.messages);
@@ -11,9 +12,16 @@ const ChatBox = ({socket}) => {
     const [text, setText] = useState("");
 
     useEffect(() => {
+        if(socket && !_.isEmpty(socket))
+            socket.on("incommingMessage", (message) => {
+                dispatch(serverNotify(message));
+            });
+    }, [socket]);
+
+    useEffect(() => {
         if(currentRoom && !_.isEmpty(currentRoom))
             dispatch(getConversation());
-    }, [socket, currentRoom, dispatch]);
+    }, [currentRoom, dispatch]);
 
     const onKeyPress = (e) => {
         let key = window.event.keyCode;
@@ -57,11 +65,11 @@ const ChatBox = ({socket}) => {
 
                 <div className="card-body msg_card_body">
                     {
-                        messages && Object.values(messages).length > 0 ?
-                        Object.values(messages).map(message => {
+                        messages && messages[currentRoom._id] && messages[currentRoom._id].length > 0 ?
+                        messages[currentRoom._id].map(message => {
                             if(!message.username){
                                 return (
-                                    <div key={message._id} class="chat-box-single-line">
+                                    <div key={message._id} className="chat-box-single-line">
                                         {message.text}
                                     </div>
                                 );
@@ -70,7 +78,7 @@ const ChatBox = ({socket}) => {
                                 return (
                                     <div key={message._id} className="d-flex justify-content-start mb-4">
                                         <div className="img_cont_msg">
-                                            <img alt="user_img" src={message.avatar} class="rounded-circle user_img_msg" />
+                                            <img alt="user_img" src={message.avatar} className="rounded-circle user_img_msg" />
                                         </div>
                                         <div className="msg_cotainer">
                                             <span className="msg_user">{message.username}</span>

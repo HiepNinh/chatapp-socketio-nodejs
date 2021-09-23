@@ -12,6 +12,8 @@ const Room = () => {
     }, [disatch]);
 
     const onClick = (index, room) => {
+        if(roomRefs.current[index].classList.contains("active")) return;
+
         Object.values(roomRefs.current).map(el => el.classList.remove("active"));
         roomRefs.current[index].classList.add("active");
 

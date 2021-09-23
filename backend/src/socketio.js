@@ -1,31 +1,44 @@
 const FilterBadWords = require('bad-words');
-const { generateMessage } = require('./utils/message');
 const { app } = require("./app");
 const SocketIO = require('./core/SocketIO');
 
 const socketio = new SocketIO(app);
 
 const socketHandler = (socket) => {
-    socket.broadcast.emit('incommingMessage', generateMessage("A new user has joint"));
+    socket.on('join', ({username, roomId}) => {
+        socket.join(roomId);
+        socketio.trackingSpecificSocket(socket.id, {username, roomId});
 
-    socket.on('messageSend', (message, callback) => {
+        socket.broadcast.to(roomId).emit('incommingMessage', 
+            {
+                roomId,
+                text: `${username} has just joined the room`
+            }
+        );
+    });
+
+    socket.on('message', (message, callback) => {
         const filter = new FilterBadWords();
-        let error = "";
+        let error = null;
 
-        if(filter.isProfane(message)){
-            message = filter.clean(message);
+        if(filter.isProfane(message.text)){
+            message.text = filter.clean(message.text);
             error = "Profanity words is not allow";
         }
 
-        socketio.io.emit('incommingMessage', generateMessage(
-            message, 
-            "https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-        ));
+        socketio.io.to(message.roomId).emit('incommingMessage', message);
         callback(error);
     });
 
     socket.on('disconnect', () => {
-        socketio.io.emit("incommingMessage", generateMessage("A user has left"));
+        const closedSocket = socketio.unTrackingSpecificSocket(socket.id);
+        if(!closedSocket) return;
+
+        const {username, roomId} = closedSocket;
+        socketio.io.to(roomId).emit('incommingMessage', {
+            roomId,
+            text: `${username} has just left the room`
+        });
     });
 }
 

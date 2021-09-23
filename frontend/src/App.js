@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import io from "socket.io-client";
 import { Router, Switch, Route } from "react-router-dom";
 import Chat from "./chat/Chat";
 import Login from './login/Login';
 import history from './history';
+import { setSocket } from "./store/actions";
 import './styles.css';
 
 const App = () => {
-  const [socket, setSocket] = useState(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const newSocket = io(`http://${window.location.hostname}:8000`);
-    setSocket(newSocket);
+    dispatch(setSocket(newSocket));
     return () => newSocket.close();
   }, [setSocket]);
 
@@ -23,7 +25,7 @@ const App = () => {
             <Login />
           </Route>
           <Route path="/chatroom" exact>
-            <Chat socket={socket} />
+            <Chat />
           </Route>
         </Switch>
       </div>
