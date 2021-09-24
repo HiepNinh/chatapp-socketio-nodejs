@@ -15,7 +15,7 @@ const App = () => {
     const newSocket = io(`http://${window.location.hostname}:8000`);
     dispatch(setSocket(newSocket));
     return () => newSocket.close();
-  }, [setSocket]);
+  }, [dispatch]);
 
   return (
     <Router history={history}>

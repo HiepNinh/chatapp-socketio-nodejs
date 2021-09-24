@@ -1,5 +1,3 @@
-import _ from "lodash";
-
 export const ChatReducer = (state = {}, action) => {
     switch (action.type) {
       //returns updated state

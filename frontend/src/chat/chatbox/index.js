@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
 import { chat, getConversation, serverNotify } from '../../store/actions';
+import { autoScroll } from '../../utils';
 
 const ChatBox = () => {
     const socket = useSelector(state => state.socket);
@@ -10,18 +11,7 @@ const ChatBox = () => {
     const messages = useSelector(state => state.messages);
     const dispatch = useDispatch();
     const [text, setText] = useState("");
-
-    useEffect(() => {
-        if(socket && !_.isEmpty(socket))
-            socket.on("incommingMessage", (message) => {
-                dispatch(serverNotify(message));
-            });
-    }, [socket]);
-
-    useEffect(() => {
-        if(currentRoom && !_.isEmpty(currentRoom))
-            dispatch(getConversation());
-    }, [currentRoom, dispatch]);
+    const messageBodyRef = useRef();
 
     const onKeyPress = (e) => {
         let key = window.event.keyCode;
@@ -36,6 +26,23 @@ const ChatBox = () => {
         dispatch(chat(text));
         setText("");
     }
+
+    useEffect(() => {
+        if(socket && !_.isEmpty(socket))
+            socket.on("incommingMessage", (message) => {
+                dispatch(serverNotify(message));
+            });
+    }, [socket, dispatch]);
+
+    useEffect(() => {
+        if(currentRoom && !_.isEmpty(currentRoom))
+            dispatch(getConversation());
+    }, [currentRoom, dispatch]);
+
+    useEffect(() => {
+        if(currentRoom && !_.isEmpty(currentRoom))
+            autoScroll(messageBodyRef.current);
+    }, [messages, currentRoom]);
 
     return (
         <div className="col-md-8 col-xl-6 chat">
@@ -63,7 +70,10 @@ const ChatBox = () => {
                     }
                 </div>
 
-                <div className="card-body msg_card_body">
+                <div 
+                    className="card-body msg_card_body"
+                    ref={messageBodyRef}
+                >
                     {
                         messages && messages[currentRoom._id] && messages[currentRoom._id].length > 0 ?
                         messages[currentRoom._id].map(message => {
